@@ -42,7 +42,7 @@ class ACTI_Admin {
 	 * @since 1.0
 	 */
 	public function storage_model_stored_columns( $columns ) {
-		if ( $this->acti->cpac->is_columns_screen() ) {
+		if ( $this->acti->cpac->is_columns_screen() && is_array( $columns ) ) {
 			foreach ( $columns as $index => $column ) {
 				if ( isset( $column['active'] ) && $column['active'] == 'off' ) {
 					unset( $columns[ $index ] );
