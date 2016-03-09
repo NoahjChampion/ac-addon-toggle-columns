@@ -109,7 +109,6 @@ class ACTI {
 	public function cac_setup( $cpac ) {
 		$this->cpac = $cpac;
 	}
-
 }
 
 new ACTI();

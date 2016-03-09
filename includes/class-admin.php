@@ -1,5 +1,7 @@
 <?php
-if ( ! defined( 'ABSPATH' ) ) exit; // Exit of accessed directly
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+} // Exit of accessed directly
 
 /**
  * Admin class
@@ -89,7 +91,7 @@ class ACTI_Admin {
 	public function column_settings_field( $column ) {
 		if ( ! $column->properties->is_activity_toggleable ) {
 			return false;
-        }
+		}
 
 		?>
 		<tr class="column_activity">
@@ -97,11 +99,11 @@ class ACTI_Admin {
 			<td class="input" data-toggle-id="<?php $column->attr_id( 'active' ); ?>">
 				<label for="<?php $column->attr_id( 'active' ); ?>-on">
 					<input type="radio" value="on" name="<?php $column->attr_name( 'active' ); ?>" id="<?php $column->attr_id( 'active' ); ?>-on"<?php checked( $column->options->active, 'on' ); ?> />
-					<?php _e( 'Yes'); ?>
+					<?php _e( 'Yes' ); ?>
 				</label>
 				<label for="<?php $column->attr_id( 'active' ); ?>-off">
 					<input type="radio" value="off" name="<?php $column->attr_name( 'active' ); ?>" id="<?php $column->attr_id( 'active' ); ?>-off"<?php checked( $column->options->active, '' ); ?><?php checked( $column->options->active, 'off' ); ?> />
-					<?php _e( 'No'); ?>
+					<?php _e( 'No' ); ?>
 				</label>
 			</td>
 		</tr>
@@ -114,13 +116,11 @@ class ACTI_Admin {
 	 * @since 1.0
 	 */
 	function column_active_indicator( $column ) {
+		if ( $column->properties->is_activity_toggleable ) : ?>
+			<span class="activity <?php echo $column->options->active; ?>" data-indicator-id="<?php $column->attr_id( 'active' ); ?>"></span>
+			<?php
+		endif;
 
-		if ( ! $column->properties->is_activity_toggleable )
-			return false;
-
-		?>
-		<span class="activity <?php echo $column->options->active; ?>" data-indicator-id="<?php $column->attr_id( 'active' ); ?>"></span>
-		<?php
 	}
 
 }
