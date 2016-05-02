@@ -1,7 +1,5 @@
 <?php
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-} // Exit of accessed directly
+defined( 'ABSPATH' ) or die();
 
 /**
  * Admin class
@@ -34,7 +32,7 @@ class ACTI_Admin {
 		add_filter( 'cac/column/default_options', array( $this, 'column_default_options' ) );
 		add_action( 'cac/column/settings_after', array( $this, 'column_settings_field' ), 10 );
 		add_action( 'cac/column/settings_meta', array( $this, 'column_active_indicator' ), 10 );
-		add_filter( 'cpac/storage_model/stored_columns', array( $this, 'storage_model_stored_columns' ) );
+		add_filter( 'cpac/storage_model/stored_columns', array( $this, 'storage_model_stored_columns' ), 10, 2 );
 	}
 
 	/**
@@ -43,8 +41,8 @@ class ACTI_Admin {
 	 * @see filter:cpac/storage_model/stored_columns
 	 * @since 1.0
 	 */
-	public function storage_model_stored_columns( $columns ) {
-		if ( ( cac_is_doing_ajax() || $this->acti->cpac->is_columns_screen() ) && is_array( $columns ) ) {
+	public function storage_model_stored_columns( $columns, $storage_model ) {
+		if ( ( cac_is_doing_ajax() || $storage_model->is_current_screen() ) && is_array( $columns ) ) {
 			foreach ( $columns as $index => $column ) {
 				if ( isset( $column['active'] ) && $column['active'] == 'off' ) {
 					unset( $columns[ $index ] );
@@ -89,25 +87,21 @@ class ACTI_Admin {
 	 * @since 1.0
 	 */
 	public function column_settings_field( $column ) {
-		if ( ! $column->properties->is_activity_toggleable ) {
-			return false;
-		}
-
-		?>
-		<tr class="column_activity">
-			<?php $column->label_view( __( 'Is column active?', 'cpac' ), __( 'Disabling this will disable the column, but not remove it from this overview.', 'cpac' ), 'activity' ); ?>
-			<td class="input" data-toggle-id="<?php $column->attr_id( 'active' ); ?>">
-				<label for="<?php $column->attr_id( 'active' ); ?>-on">
-					<input type="radio" value="on" name="<?php $column->attr_name( 'active' ); ?>" id="<?php $column->attr_id( 'active' ); ?>-on"<?php checked( $column->options->active, 'on' ); ?> />
-					<?php _e( 'Yes' ); ?>
-				</label>
-				<label for="<?php $column->attr_id( 'active' ); ?>-off">
-					<input type="radio" value="off" name="<?php $column->attr_name( 'active' ); ?>" id="<?php $column->attr_id( 'active' ); ?>-off"<?php checked( $column->options->active, '' ); ?><?php checked( $column->options->active, 'off' ); ?> />
-					<?php _e( 'No' ); ?>
-				</label>
-			</td>
-		</tr>
-		<?php
+		if ( $column->properties->is_activity_toggleable ) : ?>
+			<tr class="column_activity section">
+				<?php $column->label_view( __( 'Active', 'codepress-admin-columns' ), __( 'Disabling this will disable the column, but not remove it from this overview.', 'cpac' ), 'activity' ); ?>
+				<td class="input radio" data-toggle-id="<?php $column->attr_id( 'active' ); ?>">
+					<label for="<?php $column->attr_id( 'active' ); ?>-on">
+						<input type="radio" value="on" name="<?php $column->attr_name( 'active' ); ?>" id="<?php $column->attr_id( 'active' ); ?>-on"<?php checked( $column->get_option( 'active' ), 'on' ); ?> />
+						<?php _e( 'Yes' ); ?>
+					</label>
+					<label for="<?php $column->attr_id( 'active' ); ?>-off">
+						<input type="radio" value="off" name="<?php $column->attr_name( 'active' ); ?>" id="<?php $column->attr_id( 'active' ); ?>-off"<?php checked( $column->get_option( 'active' ), '' ); ?><?php checked( $column->options->active, 'off' ); ?> />
+						<?php _e( 'No' ); ?>
+					</label>
+				</td>
+			</tr>
+		<?php endif;
 	}
 
 	/**
@@ -117,7 +111,7 @@ class ACTI_Admin {
 	 */
 	function column_active_indicator( $column ) {
 		if ( $column->properties->is_activity_toggleable ) : ?>
-			<span class="activity <?php echo $column->options->active; ?>" data-indicator-id="<?php $column->attr_id( 'active' ); ?>"></span>
+			<span class="activity <?php echo $column->get_option( 'active' ); ?>" data-indicator-id="<?php $column->attr_id( 'active' ); ?>"></span>
 			<?php
 		endif;
 

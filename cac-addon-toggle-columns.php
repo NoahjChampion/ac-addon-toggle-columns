@@ -23,7 +23,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-if ( ! defined( 'ABSPATH' ) ) exit; // Exit of accessed directly
+defined( 'ABSPATH' ) or die();
 
 define( 'ACTI_PLUGIN_DIR_PATH', plugin_dir_path( __FILE__ ) );
 define( 'ACTI_PLUGIN_DIR_URL', plugin_dir_url( __FILE__ ) );
