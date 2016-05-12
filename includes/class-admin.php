@@ -87,21 +87,20 @@ class ACTI_Admin {
 	 * @since 1.0
 	 */
 	public function column_settings_field( $column ) {
-		if ( $column->properties->is_activity_toggleable ) : ?>
-			<tr class="column_activity section">
-				<?php $column->label_view( __( 'Active', 'codepress-admin-columns' ), __( 'Disabling this will disable the column, but not remove it from this overview.', 'cpac' ), 'activity' ); ?>
-				<td class="input radio" data-toggle-id="<?php $column->attr_id( 'active' ); ?>">
-					<label for="<?php $column->attr_id( 'active' ); ?>-on">
-						<input type="radio" value="on" name="<?php $column->attr_name( 'active' ); ?>" id="<?php $column->attr_id( 'active' ); ?>-on"<?php checked( $column->get_option( 'active' ), 'on' ); ?> />
-						<?php _e( 'Yes' ); ?>
-					</label>
-					<label for="<?php $column->attr_id( 'active' ); ?>-off">
-						<input type="radio" value="off" name="<?php $column->attr_name( 'active' ); ?>" id="<?php $column->attr_id( 'active' ); ?>-off"<?php checked( $column->get_option( 'active' ), '' ); ?><?php checked( $column->options->active, 'off' ); ?> />
-						<?php _e( 'No' ); ?>
-					</label>
-				</td>
-			</tr>
-		<?php endif;
+		if ( $column->properties->is_activity_toggleable ) {
+			$column->form_field( array(
+				'type'           => 'radio',
+				'name'           => 'active',
+				'label'          => __( 'Active', 'codepress-admin-columns' ),
+				'description'    => __( 'Disabling this will disable the column, but not remove it from this overview.', 'cpac' ),
+				'options'        => array(
+					'on'  => __( 'Yes' ),
+					'off' => __( 'No' ),
+				),
+				'section'        => true,
+				'toggle_trigger' => 'active',
+			) );
+		}
 	}
 
 	/**
@@ -116,5 +115,4 @@ class ACTI_Admin {
 		endif;
 
 	}
-
 }
