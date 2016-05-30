@@ -27,9 +27,8 @@ class ACTI_Admin {
 		$this->acti = $acti;
 
 		// Hooks
-		add_action( 'admin_enqueue_scripts', array( $this, 'scripts' ) );
-		add_filter( 'cac/column/properties', array( $this, 'column_default_properties' ) );
-		add_filter( 'cac/column/default_options', array( $this, 'column_default_options' ) );
+		add_action( 'ac/enqueue_settings_scripts', array( $this, 'scripts' ) );
+		add_action( 'ac/column/defaults', array( $this, 'set_column_defaults' ) );
 		add_action( 'cac/column/settings_after', array( $this, 'column_settings_field' ), 10 );
 		add_action( 'cac/column/settings_meta', array( $this, 'column_active_indicator' ), 10 );
 		add_filter( 'cpac/storage_model/stored_columns', array( $this, 'storage_model_stored_columns' ), 10, 2 );
@@ -66,20 +65,9 @@ class ACTI_Admin {
 	 * @see filter:cac/column/properties
 	 * @since 1.0
 	 */
-	function column_default_properties( $properties ) {
-		$properties['is_activity_toggleable'] = true;
-
-		return $properties;
-	}
-
-	/**
-	 * @see filter:cac/column/options
-	 * @since 1.0
-	 */
-	function column_default_options( $options ) {
-		$options['active'] = 'on';
-
-		return $options;
+	function set_column_defaults( $column ) {
+		$column->set_properties( 'is_activity_toggleable', true );
+		$column->set_options( 'active', 'on' );
 	}
 
 	/**
@@ -87,7 +75,7 @@ class ACTI_Admin {
 	 * @since 1.0
 	 */
 	public function column_settings_field( $column ) {
-		if ( $column->properties->is_activity_toggleable ) {
+		if ( $column->get_property( 'is_activity_toggleable' ) ) {
 			$column->form_field( array(
 				'type'           => 'radio',
 				'name'           => 'active',
@@ -109,7 +97,7 @@ class ACTI_Admin {
 	 * @since 1.0
 	 */
 	function column_active_indicator( $column ) {
-		if ( $column->properties->is_activity_toggleable ) : ?>
+		if ( $column->get_property( 'is_activity_toggleable' ) ) : ?>
 			<span class="activity <?php echo $column->get_option( 'active' ); ?>" data-indicator-id="<?php $column->attr_id( 'active' ); ?>"></span>
 			<?php
 		endif;
