@@ -9,24 +9,14 @@ defined( 'ABSPATH' ) or die();
 class ACTI_Admin {
 
 	/**
-	 * Plugin class instance
-	 *
-	 * @var ACTI
-	 * @since 1.0
-	 */
-	public $acti;
-
-	/**
 	 * Constructor
 	 *
 	 * @since 1.0
 	 *
 	 * @var ACTI $acti Plugin class instance
 	 */
-	public function __construct( ACTI $acti ) {
-		$this->acti = $acti;
+	public function __construct() {
 
-		// Hooks
 		add_action( 'ac/enqueue_settings_scripts', array( $this, 'scripts' ) );
 		add_action( 'ac/column/defaults', array( $this, 'set_column_defaults' ) );
 		add_action( 'cac/column/settings_after', array( $this, 'column_settings_field' ), 10 );
@@ -58,7 +48,7 @@ class ACTI_Admin {
 	 * @since 1.0
 	 */
 	public function scripts() {
-		wp_enqueue_style( 'acti/admin', ACTI_PLUGIN_DIR_URL . 'assets/css/admin.css' );
+		wp_enqueue_style( 'acti/admin', plugin_dir_url( ACTI_FILE ) . 'assets/css/admin.css' );
 	}
 
 	/**
@@ -66,8 +56,8 @@ class ACTI_Admin {
 	 * @since 1.0
 	 */
 	function set_column_defaults( $column ) {
-		$column->set_properties( 'is_activity_toggleable', true );
-		$column->set_options( 'active', 'on' );
+		$column->properties['is_activity_toggleable'] = true;
+		$column->options['active'] = 'on';
 	}
 
 	/**
@@ -101,6 +91,5 @@ class ACTI_Admin {
 			<span class="activity <?php echo $column->get_option( 'active' ); ?>" data-indicator-id="<?php $column->attr_id( 'active' ); ?>"></span>
 			<?php
 		endif;
-
 	}
 }
