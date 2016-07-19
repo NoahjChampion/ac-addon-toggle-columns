@@ -62,11 +62,12 @@ class ACTI_Admin {
 
 	/**
 	 * @see filter:cac/column/settings_after
+	 * @param CPAC_Column $column
 	 * @since 1.0
 	 */
 	public function column_settings_field( $column ) {
 		if ( $column->get_property( 'is_activity_toggleable' ) ) {
-			$column->form_field( array(
+			$column->field_settings->field( array(
 				'type'           => 'radio',
 				'name'           => 'active',
 				'label'          => __( 'Active', 'codepress-admin-columns' ),
@@ -83,12 +84,12 @@ class ACTI_Admin {
 
 	/**
 	 * Label in column admin screen column header
-	 *
+	 * @param CPAC_Column $column
 	 * @since 1.0
 	 */
 	function column_active_indicator( $column ) {
 		if ( $column->get_property( 'is_activity_toggleable' ) ) : ?>
-			<span class="activity <?php echo $column->get_option( 'active' ); ?>" data-indicator-id="<?php $column->attr_id( 'active' ); ?>"></span>
+			<span class="activity <?php echo $column->get_option( 'active' ); ?>" data-indicator-id="<?php $column->field_settings->attr_id( 'active' ); ?>"></span>
 			<?php
 		endif;
 	}
