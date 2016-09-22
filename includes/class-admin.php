@@ -21,17 +21,20 @@ class ACTI_Admin {
 		add_action( 'ac/column/defaults', array( $this, 'set_column_defaults' ) );
 		add_action( 'cac/column/settings_after', array( $this, 'column_settings_field' ), 10 );
 		add_action( 'cac/column/settings_meta', array( $this, 'column_active_indicator' ), 10 );
-		add_filter( 'cpac/storage_model/stored_columns', array( $this, 'storage_model_stored_columns' ), 10, 2 );
+		add_filter( 'ac/listings_screen/columns', array( $this, 'remove_inactive_columns_from_overview' ) );
 	}
 
 	/**
 	 * Prevent inactive columns from being displayed on content overview pages
 	 *
+	 * @param array $columns
+	 * @param AC_StorageModel $storage_model
+	 *
 	 * @see filter:cpac/storage_model/stored_columns
 	 * @since 1.0
 	 */
-	public function storage_model_stored_columns( $columns, $storage_model ) {
-		if ( ( cac_is_doing_ajax() || $storage_model->is_current_screen() ) && is_array( $columns ) ) {
+	public function remove_inactive_columns_from_overview( $columns ) {
+		if ( is_array( $columns ) ) {
 			foreach ( $columns as $index => $column ) {
 				if ( isset( $column['active'] ) && $column['active'] == 'off' ) {
 					unset( $columns[ $index ] );
@@ -57,7 +60,7 @@ class ACTI_Admin {
 	 */
 	function set_column_defaults( $column ) {
 		$column->properties['is_activity_toggleable'] = true;
-		$column->options['active'] = 'on';
+		$column->default_options['active'] = 'on';
 	}
 
 	/**
