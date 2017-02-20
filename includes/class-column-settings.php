@@ -6,7 +6,7 @@ class ACTI_Column_Settings extends AC_Settings_Setting
 	private $active;
 
 	protected function define_options() {
-		return array( 'active' => 'off' );
+		return array( 'active' => 'on' );
 	}
 
 	public function create_header_view() {
