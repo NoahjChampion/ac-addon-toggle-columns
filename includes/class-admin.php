@@ -17,7 +17,8 @@ class ACTI_Admin {
 
 		add_action( 'ac/settings_scripts', array( $this, 'admin_scripts' ) );
 		add_action( 'ac/column/settings', array( $this, 'column_settings' ) );
-		add_filter( 'ac/headings', array( $this, 'disable_columns' ), 10, 2 );
+		add_filter( 'ac/headings', array( $this, 'remove_table_headings' ), 10, 2 );
+		add_action( 'ac/table/list_screen', array( $this, 'remove_table_columns' ) );
 	}
 
 	public function admin_scripts() {
@@ -34,19 +35,45 @@ class ACTI_Admin {
 	}
 
 	/**
-	 * @param array $headings
+	 * @param AC_ListScreen $list_screen
+	 */
+	public function remove_table_columns( $list_screen ) {
+		foreach ( $this->get_disabled_columns( $list_screen ) as $name ) {
+			$list_screen->deregister_column( $name );
+		}
+	}
+
+	/**
+	 * @param array         $headings
 	 * @param AC_ListScreen $list_screen
 	 *
 	 * @return array
 	 */
-	public function disable_columns( $headings, $list_screen  ) {
-		foreach ( $list_screen->get_columns() as $column ) {
-			if ( 'off' === $column->get_setting( 'active' )->get_value() ) {
-				unset( $headings[ $column->get_name() ] );
-			}
+	public function remove_table_headings( $headings, $list_screen ) {
+		foreach ( $this->get_disabled_columns( $list_screen ) as $name ) {
+			unset( $headings[ $name ] );
 		}
 
 		return $headings;
+	}
+
+	/**
+	 * @param AC_ListScreen $list_screen
+	 */
+	private function get_disabled_columns( $list_screen ) {
+		$column_names = array();
+
+		foreach ( $list_screen->get_columns() as $column ) {
+
+			/* @var ACTI_Column_Settings $setting */
+			$setting = $column->get_setting( 'active' );
+
+			if ( ! $setting->is_active() ) {
+				$column_names[] = $column->get_name();
+			}
+		}
+
+		return $column_names;
 	}
 
 }

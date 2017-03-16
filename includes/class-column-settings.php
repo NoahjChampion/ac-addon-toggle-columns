@@ -1,6 +1,6 @@
 <?php
 
-class ACTI_Column_Settings extends AC_Settings_Setting
+class ACTI_Column_Settings extends AC_Settings_Column
 	implements AC_Settings_HeaderInterface {
 
 	private $active;
@@ -22,11 +22,12 @@ class ACTI_Column_Settings extends AC_Settings_Setting
 	}
 
 	public function create_view() {
-		$active = $this->create_element( 'radio', 'active' )
-		             ->set_options( array(
-			             'on'  => __( 'Yes' ),
-			             'off' => __( 'No' ),
-		             ) );
+		$active = $this
+			->create_element( 'radio', 'active' )
+			->set_options( array(
+				'on'  => __( 'Yes' ),
+				'off' => __( 'No' ),
+			) );
 
 		$view = new AC_View();
 		$view->set( 'label', __( 'Active', 'codepress-admin-columns' ) )
@@ -52,6 +53,10 @@ class ACTI_Column_Settings extends AC_Settings_Setting
 		$this->active = $active;
 
 		return $this;
+	}
+
+	public function is_active() {
+		return 'on' === $this->get_active();
 	}
 
 }
