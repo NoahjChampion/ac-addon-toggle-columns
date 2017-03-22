@@ -1,6 +1,6 @@
 <?php
 
-class ACTI_Column_Settings extends AC_Settings_Column
+class ACA_Toggle_Settings_Column extends AC_Settings_Column
 	implements AC_Settings_HeaderInterface {
 
 	private $active;
